@@ -77,7 +77,7 @@ export const commentOnPost = async (req, res) => {
     if (!post) {
       return res.status(404).json({ error: "Post not found" });
     }
-
+    //todo do it like likeUnlikePost so ux is better
     const comment = { user: userId, text };
 
     post.comments.push(comment);
