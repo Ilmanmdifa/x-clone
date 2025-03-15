@@ -51,11 +51,10 @@ export const followUnfollowUser = async (req, res) => {
 
       await newNotification.save();
 
-      //todo return the id of the user as a response
       res.status(200).json({ message: "User followed successfully" });
     }
   } catch (error) {
-    console.log("Error in getUserProfile: ", error.message);
+    console.log("Error in followUnfollowUser controller: ", error.message);
     res.status(500).json({ error: error.message });
   }
 };
@@ -64,7 +63,7 @@ export const getSuggestedUsers = async (req, res) => {
   try {
     const userId = req.user._id;
 
-    const userFollowedByMe = await User.findById(userId).select("following");
+    const usersFollowedByMe = await User.findById(userId).select("following");
 
     const users = await User.aggregate([
       {
@@ -76,11 +75,11 @@ export const getSuggestedUsers = async (req, res) => {
     ]);
 
     const filteredUsers = users.filter(
-      (user) => !userFollowedByMe.following.includes(user._id)
+      (user) => !usersFollowedByMe.following.includes(user._id)
     );
     const suggestedUsers = filteredUsers.slice(0, 4);
 
-    suggestedUsers.forEach((user) => user.password === null);
+    suggestedUsers.forEach((user) => (user.password = null));
 
     res.status(200).json(suggestedUsers);
   } catch (error) {
