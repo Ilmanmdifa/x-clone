@@ -89,7 +89,7 @@ export const getSuggestedUsers = async (req, res) => {
 };
 
 export const updateUser = async (req, res) => {
-  const { fullname, email, username, currentPassword, newPassword, bio, link } =
+  const { fullName, email, username, currentPassword, newPassword, bio, link } =
     req.body;
   let { profileImg, coverImg } = req.body;
 
@@ -97,7 +97,7 @@ export const updateUser = async (req, res) => {
 
   try {
     let user = await User.findById(userId);
-    if (!user) res.status(404).son({ message: "User not found" });
+    if (!user) res.status(404).json({ message: "User not found" });
 
     if (
       (!newPassword && currentPassword) ||
@@ -129,8 +129,8 @@ export const updateUser = async (req, res) => {
         );
       }
 
-      const uploadedResponses = await cloudinary.uploader.upload(profileImg);
-      profileImg = uploadedResponses.secure_url;
+      const uploadedResponse = await cloudinary.uploader.upload(profileImg);
+      profileImg = uploadedResponse.secure_url;
     }
 
     if (coverImg) {
@@ -139,11 +139,11 @@ export const updateUser = async (req, res) => {
           user.coverImg.split("/").pop().split(".")[0]
         );
       }
-      const uploadedResponses = await cloudinary.uploader.upload(coverImg);
-      coverImg = uploadedResponses.secure_url;
+      const uploadedResponse = await cloudinary.uploader.upload(coverImg);
+      coverImg = uploadedResponse.secure_url;
     }
 
-    user.fullname = fullname || user.fullname;
+    user.fullName = fullName || user.fullName;
     user.email = email || user.email;
     user.username = username || user.username;
     user.bio = bio || user.bio;
